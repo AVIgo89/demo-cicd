@@ -1,0 +1,17 @@
+#cloud-config
+package_update: true
+package_upgrade: false
+packages:
+  - curl
+  - ca-certificates
+
+runcmd:
+  # ставим k3s, TLS SAN — публичный IP (он известен заранее из статического адреса)
+  - curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--tls-san=${public_ip} --write-kubeconfig-mode 644" sh -
+  # подменяем 127.0.0.1 на публичный IP в kubeconfig
+  - sed -i "s|127.0.0.1|${public_ip}|g" /etc/rancher/k3s/k3s.yaml
+  # кладём kubeconfig для пользователя ubuntu
+  - mkdir -p /home/ubuntu/.kube
+  - cp /etc/rancher/k3s/k3s.yaml /home/ubuntu/.kube/config
+  - chown -R ubuntu:ubuntu /home/ubuntu/.kube
+  - echo "k3s install finished at $(date)" >> /var/log/k3s-init.log

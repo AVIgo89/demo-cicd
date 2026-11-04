@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "demo.fullname" . }}
+  labels:
+    app: demo
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: demo
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: http
