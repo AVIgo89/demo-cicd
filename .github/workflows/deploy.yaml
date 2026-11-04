@@ -32,6 +32,6 @@ jobs:
             --set image.repository=ghcr.io/${{ github.repository }} \
             --set image.tag=${{ github.ref_name }} \
             --set appVersion=${{ github.ref_name }} \
-            --wait --timeout 5m
+            --wait --timeout 5m \
             --burst-limit 300 \
             --qps 50
